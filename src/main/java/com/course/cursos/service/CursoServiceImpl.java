@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.course.commons.service.CommonsServiceImpl;
 import com.course.cursos.repository.CursoRepository;
@@ -16,19 +17,26 @@ public class CursoServiceImpl extends CommonsServiceImpl<Curso, CursoRepository>
 	CursoService service;
 	
 	@Override
+	@Transactional
 	public Curso update(Curso curso) {
 		
 		Optional<Curso> cursodb = null;
 		if (null != curso) {
-			cursodb = service.findById(curso.getCursoId());
+			cursodb = repository.findById(curso.getCursoId());
 			if (cursodb.isPresent()) {
 				cursodb.get().setNameCurso(curso.getNameCurso());
-				service.update(cursodb.get());
+				repository.save(cursodb.get());
 				return cursodb.get();
 			}
 		}
 		
 		return null;
+	}
+
+	@Override
+	public Curso getCursoByAlumnoId(Long alumnoId) {
+		
+		return service.getCursoByAlumnoId(alumnoId);
 	}
 
 }
